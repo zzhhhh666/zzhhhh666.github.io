@@ -1,0 +1,13 @@
+{
+  "name": "你的名字",
+  "title": "Independent Researcher / Student",
+  "location": "China",
+  "focus": ["AI", "Systems", "Theory"],
+  "bio": "这里写一段 2-3 句的中文简介：你是谁、你关心什么问题、你正在研究或学习什么。",
+  "email": "your.email@example.com",
+  "links": [
+    { "label": "GitHub", "url": "https://github.com/yourname" },
+    { "label": "Google Scholar", "url": "#" },
+    { "label": "CV", "url": "#" }
+  ]
+}

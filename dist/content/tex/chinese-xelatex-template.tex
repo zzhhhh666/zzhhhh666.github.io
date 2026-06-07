@@ -1,0 +1,28 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{a4paper, margin=2.5cm}
+
+\title{中文 LaTeX 示例}
+\author{你的名字}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{中文与数学}
+
+推荐用 XeLaTeX 或 LuaLaTeX 编译中文文档。公式示例：
+
+\[
+  \int_0^\infty e^{-x^2}\,dx = \frac{\sqrt{\pi}}{2}
+\]
+
+\section{发布到博客}
+
+如果只是网页文章，建议优先写 Markdown，并在 Markdown 中嵌入 LaTeX 公式。
+如果需要完整论文式排版，可以保留这个 \texttt{.tex} 文件，同时发布编译后的 PDF。
+
+\end{document}
