@@ -1,0 +1,14 @@
+[
+  {
+    "index": "01",
+    "title": "Research Notes",
+    "description": "用 Markdown 写快速想法，用 LaTeX 写公式，最终发布成可阅读网页。",
+    "url": "#"
+  },
+  {
+    "index": "02",
+    "title": "Paper Archive",
+    "description": "整理论文、复现代码、实验结果和可公开的学习路线。",
+    "url": "#"
+  }
+]
