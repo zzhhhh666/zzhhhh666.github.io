@@ -1,13 +1,13 @@
 {
   "name": "Zihan Zhang (张子晗)",
-  "title": "Phd in Fudan University",
+  "title": "PhD Student, Fudan University",
   "location": "China",
   "focus": ["AIDD", "LLMs", "GenAI"],
-  "bio": "我是张子晗，这是我的个人主页，我的本科毕业于中国海洋大学数学与应用数学专业，目前就读于复旦大学电子信息专业。这里主要并非展示自我，更多会记录个人学习过程，我有做笔记的习惯，博士期间我将会致力于AI药物设计等内容。",
+  "photo": "content/assets/profile.jpg",
+  "bio": "我是张子晗，本科毕业于中国海洋大学数学与应用数学专业，目前就读于复旦大学电子信息专业。这个主页主要用于记录我的学习过程、研究笔记和技术写作。博士期间，我将关注 AI 药物设计等方向。",
   "email": "zzh7488@stu.ouc.edu.cn",
   "links": [
     { "label": "GitHub", "url": "https://github.com/zzhhhh666" },
-    { "label": "Google Scholar", "url": "https://scholar.google.com/citations?hl=zh-CN&user=NPYl_Y8AAAAJ" },
-    { "label": "CV", "url": "#" }
+    { "label": "Google Scholar", "url": "https://scholar.google.com/citations?hl=zh-CN&user=NPYl_Y8AAAAJ" }
   ]
 }

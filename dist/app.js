@@ -6,46 +6,34 @@ const paperList = document.querySelector("#paper-list");
 const contactLine = document.querySelector("#contact-line");
 let currentSlug = "";
 
-marked.setOptions({
-  gfm: true,
-  breaks: true
-});
+if (window.marked) {
+  marked.setOptions({
+    gfm: true,
+    breaks: true
+  });
+}
 
 function stripFrontmatter(source) {
   return source.replace(/^---[\s\S]*?\n---\s*/, "");
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function renderMarkdown(source) {
+  if (window.marked) return marked.parse(source);
+  return `<pre>${escapeHtml(source)}</pre>`;
+}
+
 function renderMath() {
   if (!window.MathJax?.typesetPromise) return;
   window.MathJax.typesetPromise([postView]).catch(() => {});
-}
-
-async function loadPosts(selectSlug = currentSlug) {
-  const posts = await fetch("/api/posts").then((response) => response.json());
-  postList.innerHTML = "";
-
-  if (!posts.length) {
-    postList.innerHTML = '<div class="post-button"><strong>暂无文章</strong><span>在 content/blog 添加 .md 文件。</span></div>';
-    postView.innerHTML = "<h1>暂无文章</h1><p>新建 Markdown 文件后，这里会自动更新。</p>";
-    return;
-  }
-
-  const selected = posts.find((post) => post.slug === selectSlug) || posts[0];
-  currentSlug = selected.slug;
-
-  for (const post of posts) {
-    const button = document.createElement("button");
-    button.className = `post-button${post.slug === currentSlug ? " active" : ""}`;
-    button.type = "button";
-    button.innerHTML = `
-      <strong>${post.title}</strong>
-      <span>${post.date}${post.summary ? ` · ${post.summary}` : ""}</span>
-    `;
-    button.addEventListener("click", () => loadPost(post.slug));
-    postList.append(button);
-  }
-
-  await loadPost(currentSlug, false);
 }
 
 async function loadJson(path) {
@@ -57,64 +45,136 @@ async function loadJson(path) {
 async function loadProfile() {
   try {
     const profile = await loadJson("/content/profile.json");
+
     document.querySelectorAll('[data-profile="name"]').forEach((node) => {
-      node.textContent = profile.name;
+      node.textContent = profile.name || "Zihan Zhang";
+    });
+    document.querySelectorAll('[data-profile="title"]').forEach((node) => {
+      node.textContent = profile.title || "";
     });
     document.querySelectorAll('[data-profile="bio"]').forEach((node) => {
-      node.textContent = profile.bio;
+      node.textContent = profile.bio || "";
     });
     document.querySelectorAll('[data-profile="focus"]').forEach((node) => {
       node.textContent = (profile.focus || []).join(" · ");
     });
-    document.title = `${profile.name} | 学术主页`;
+    document.querySelectorAll('[data-profile="location"]').forEach((node) => {
+      node.textContent = profile.location || "";
+    });
+    document.querySelectorAll("[data-profile-photo]").forEach((node) => {
+      if (!profile.photo) {
+        node.closest(".profile-photo")?.classList.remove("is-visible");
+        return;
+      }
+      node.src = `${profile.photo}?ts=${Date.now()}`;
+      node.alt = `${profile.name || "Profile"} photo`;
+      node.onload = () => node.closest(".profile-photo")?.classList.add("is-visible");
+      node.onerror = () => node.closest(".profile-photo")?.classList.remove("is-visible");
+    });
+
+    document.title = `${profile.name || "Zihan Zhang"} | Academic Homepage`;
 
     const links = (profile.links || [])
-      .filter((link) => link.url)
-      .map((link) => `<a href="${link.url}">${link.label}</a>`)
+      .filter((link) => link.url && link.url !== "#")
+      .map((link) => `<a href="${escapeHtml(link.url)}">${escapeHtml(link.label)}</a>`)
       .join(" · ");
-    contactLine.innerHTML = `${profile.email || ""}${links ? ` · ${links}` : ""}`;
+    const email = profile.email ? `<a href="mailto:${escapeHtml(profile.email)}">${escapeHtml(profile.email)}</a>` : "";
+    contactLine.innerHTML = [email, links].filter(Boolean).join(" · ");
   } catch {
-    contactLine.textContent = "编辑 content/profile.json 来填写你的联系方式。";
+    contactLine.textContent = "";
   }
 }
 
 async function loadProjects() {
   try {
     const projects = await loadJson("/content/projects.json");
+    if (!projects.length) {
+      projectList.innerHTML = '<p class="empty-note">No public projects listed yet.</p>';
+      return;
+    }
+
     projectList.innerHTML = projects
       .map(
         (project) => `
           <article class="project-card">
-            <span>${project.index || ""}</span>
-            <h3>${project.title}</h3>
-            <p>${project.description}</p>
-            ${project.url && project.url !== "#" ? `<a href="${project.url}">查看项目</a>` : ""}
+            <span>${escapeHtml(project.index || "")}</span>
+            <h3>${escapeHtml(project.title || "")}</h3>
+            <p>${escapeHtml(project.description || "")}</p>
+            ${project.url && project.url !== "#" ? `<a href="${escapeHtml(project.url)}">View project</a>` : ""}
           </article>
         `
       )
       .join("");
   } catch {
-    projectList.innerHTML = "";
+    projectList.innerHTML = '<p class="empty-note">No public projects listed yet.</p>';
   }
 }
 
 async function loadPapers() {
   try {
     const papers = await loadJson("/content/papers.json");
+    if (!papers.length) {
+      paperList.innerHTML = '<p class="empty-note">No papers listed yet.</p>';
+      return;
+    }
+
     paperList.innerHTML = papers
       .map(
         (paper) => `
           <article class="paper-item">
-            <h3>${paper.title}</h3>
-            <p>${paper.venue || ""}${paper.year ? ` · ${paper.year}` : ""}</p>
-            <p>${paper.description || ""}</p>
-            ${paper.url && paper.url !== "#" ? `<a href="${paper.url}">阅读</a>` : ""}
+            <h3>${escapeHtml(paper.title || "")}</h3>
+            <p>${escapeHtml([paper.venue, paper.year].filter(Boolean).join(" · "))}</p>
+            <p>${escapeHtml(paper.description || "")}</p>
+            ${paper.url && paper.url !== "#" ? `<a href="${escapeHtml(paper.url)}">Read</a>` : ""}
           </article>
         `
       )
       .join("");
   } catch {
-    paperList.innerHTML = "";
+    paperList.innerHTML = '<p class="empty-note">No papers listed yet.</p>';
+  }
+}
+
+async function loadPosts(selectSlug = currentSlug) {
+  try {
+    const posts = await fetch(`/api/posts?ts=${Date.now()}`).then((response) => {
+      if (!response.ok) throw new Error("Cannot load post manifest");
+      return response.json();
+    });
+
+    postList.innerHTML = "";
+
+    if (!posts.length) {
+      postList.innerHTML = '<div class="post-button"><strong>No posts yet</strong><span>Add Markdown files in content/blog.</span></div>';
+      postView.innerHTML = "<h1>No posts yet</h1><p>Add a Markdown file in <code>content/blog</code>, then rebuild and publish.</p>";
+      liveStatus.textContent = "Ready";
+      return;
+    }
+
+    const selected = posts.find((post) => post.slug === selectSlug) || posts[0];
+    currentSlug = selected.slug;
+
+    for (const post of posts) {
+      const button = document.createElement("button");
+      button.className = `post-button${post.slug === currentSlug ? " active" : ""}`;
+      button.type = "button";
+      button.dataset.slug = post.slug;
+      button.innerHTML = `
+        <strong>${escapeHtml(post.title)}</strong>
+        <span>${escapeHtml(post.date)}${post.summary ? ` · ${escapeHtml(post.summary)}` : ""}</span>
+      `;
+      button.addEventListener("click", () => loadPost(post.slug));
+      postList.append(button);
+    }
+
+    await loadPost(currentSlug, false);
+    liveStatus.textContent = ["localhost", "127.0.0.1"].includes(window.location.hostname)
+      ? "Watching"
+      : "Published";
+  } catch (error) {
+    postList.innerHTML = '<div class="post-button"><strong>Blog failed to load</strong><span>Check api/posts and content/blog.</span></div>';
+    postView.innerHTML = `<h1>Blog failed to load</h1><p>${escapeHtml(error.message)}</p>`;
+    liveStatus.textContent = "Error";
   }
 }
 
@@ -122,30 +182,25 @@ async function loadPost(slug, refreshList = true) {
   currentSlug = slug;
   if (refreshList) {
     for (const button of postList.querySelectorAll(".post-button")) {
-      button.classList.remove("active");
+      button.classList.toggle("active", button.dataset.slug === slug);
     }
   }
 
-  const source = await fetch(`/content/blog/${slug}.md?ts=${Date.now()}`).then((response) =>
-    response.text()
-  );
-  postView.innerHTML = marked.parse(stripFrontmatter(source));
+  const response = await fetch(`/content/blog/${slug}.md?ts=${Date.now()}`);
+  if (!response.ok) throw new Error(`Cannot load post: ${slug}`);
+  const source = await response.text();
+  postView.innerHTML = renderMarkdown(stripFrontmatter(source));
   renderMath();
 }
 
 if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
   new EventSource("/events").addEventListener("message", async () => {
-    liveStatus.textContent = "已更新";
+    liveStatus.textContent = "Updated";
     await loadProfile();
     await loadProjects();
     await loadPapers();
     await loadPosts(currentSlug);
-    window.setTimeout(() => {
-      liveStatus.textContent = "监听中";
-    }, 900);
   });
-} else {
-  liveStatus.textContent = "静态发布";
 }
 
 loadProfile();

@@ -61,6 +61,9 @@ await Promise.all([
   copyTree(path.join(root, "content"), path.join(outDir, "content"))
 ]);
 await mkdir(path.join(outDir, "api"), { recursive: true });
-await writeFile(path.join(outDir, "api", "posts"), JSON.stringify(await getPosts()), "utf8");
+const postsJson = JSON.stringify(await getPosts());
+await writeFile(path.join(outDir, "api", "posts"), postsJson, "utf8");
+await mkdir(path.join(root, "api"), { recursive: true });
+await writeFile(path.join(root, "api", "posts"), postsJson, "utf8");
 
 console.log(`Built static site to ${outDir}`);

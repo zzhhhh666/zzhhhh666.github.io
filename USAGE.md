@@ -49,6 +49,35 @@ content\profile.json
 }
 ```
 
+## 2.1 放个人照片
+
+把你的个人照片复制到：
+
+```text
+content\assets\profile.jpg
+```
+
+推荐用正方形或接近正方形照片。如果你的照片是 `.png`，也可以放到：
+
+```text
+content\assets\profile.png
+```
+
+然后把 `content\profile.json` 里的这一行改成：
+
+```json
+"photo": "content/assets/profile.png",
+```
+
+改完后重新构建并发布：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-local.ps1
+git add .
+git commit -m "Update profile photo"
+git push
+```
+
 注意：
 
 - 英文双引号不能删。

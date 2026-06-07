@@ -131,6 +131,29 @@ h3 {
   line-height: 1.85;
 }
 
+.profile-photo {
+  display: none;
+  width: min(180px, 42vw);
+  aspect-ratio: 1;
+  margin: 0 0 28px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.profile-photo.is-visible {
+  display: block;
+}
+
+.profile-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;

@@ -3,22 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>学术主页 | Paper + Code</title>
+    <title>Zihan Zhang | Academic Homepage</title>
     <meta
       name="description"
-      content="A Chinese-friendly academic homepage with live Markdown and LaTeX notes."
+      content="Zihan Zhang's academic homepage, notes, projects, and Markdown/LaTeX blog."
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="site-header">
-      <nav class="nav" aria-label="主导航">
-        <a class="brand" href="#top" data-profile="name">你的名字</a>
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="#top" data-profile="name">Zihan Zhang</a>
         <div class="nav-links">
-          <a href="#research">研究</a>
-          <a href="#blog">博客</a>
-          <a href="#projects">项目</a>
-          <a href="#contact">联系</a>
+          <a href="#research">Research</a>
+          <a href="#blog">Blog</a>
+          <a href="#projects">Projects</a>
+          <a href="#contact">Contact</a>
         </div>
       </nav>
     </header>
@@ -26,29 +26,31 @@
     <main id="top">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Personal Academic Homepage</p>
-          <h1>在论文、代码和中文笔记之间，搭一张干净的工作台。</h1>
-          <p class="hero-text">
-            <span data-profile="bio">这里可以放研究方向、论文、项目和实时更新的 Markdown/LaTeX 博客。</span>
-            当前版本已经支持中文排版、数学公式和本地保存后自动刷新。
+          <figure class="profile-photo">
+            <img data-profile-photo alt="Zihan Zhang profile photo" />
+          </figure>
+          <p class="eyebrow" data-profile="title">PhD in Fudan University</p>
+          <h1>Notes on AI, drug design, and the mathematics behind useful systems.</h1>
+          <p class="hero-text" data-profile="bio">
+            This site collects my research notes, learning process, and long-form technical writing.
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#blog">阅读博客</a>
-            <a class="button ghost" href="content/tex/chinese-xelatex-template.tex">中文 LaTeX 模板</a>
+            <a class="button primary" href="#blog">Read Blog</a>
+            <a class="button ghost" href="#contact">Contact</a>
           </div>
         </div>
-        <aside class="paper-panel" aria-label="主页摘要">
+        <aside class="paper-panel" aria-label="Profile summary">
           <div class="paper-line">
             <span>Focus</span>
-            <strong data-profile="focus">AI · Systems · Theory</strong>
+            <strong data-profile="focus">AIDD · LLMs · GenAI</strong>
           </div>
           <div class="paper-line">
-            <span>Notes</span>
+            <span>Writing</span>
             <strong>Markdown + LaTeX</strong>
           </div>
           <div class="paper-line">
-            <span>Build</span>
-            <strong>Free Static Web</strong>
+            <span>Location</span>
+            <strong data-profile="location">China</strong>
           </div>
           <pre><code>$$
 \nabla_\theta J(\theta)
@@ -60,18 +62,14 @@ $$</code></pre>
       <section id="research" class="section two-column">
         <div>
           <p class="section-kicker">Research</p>
-          <h2>研究方向</h2>
+          <h2>Research Direction</h2>
         </div>
         <div class="prose">
           <p>
-            把这里替换成你的研究兴趣：例如大语言模型、强化学习、编译系统、数学优化、复杂系统、认知科学或你真正关心的问题。
+            My current interests are AI-driven drug design, large language models, and generative AI.
+            I use this site mainly as a working notebook rather than a polished self-promotion page.
           </p>
           <div class="paper-list" id="paper-list"></div>
-          <ul class="compact-list">
-            <li>论文列表可以链接到 arXiv、Google Scholar 或 PDF。</li>
-            <li>项目可以连接 GitHub、演示页面或数据集。</li>
-            <li>中文和英文内容可以混排，适合长期维护。</li>
-          </ul>
         </div>
       </section>
 
@@ -79,12 +77,12 @@ $$</code></pre>
         <div class="blog-header">
           <div>
             <p class="section-kicker">Live Blog</p>
-            <h2>Markdown / LaTeX 博客</h2>
+            <h2>Markdown / LaTeX Blog</h2>
           </div>
-          <div class="status" id="live-status">监听中</div>
+          <div class="status" id="live-status">Loading</div>
         </div>
         <div class="blog-layout">
-          <aside class="post-list" id="post-list" aria-label="文章列表"></aside>
+          <aside class="post-list" id="post-list" aria-label="Post list"></aside>
           <article class="post-view prose" id="post-view"></article>
         </div>
       </section>
@@ -92,14 +90,14 @@ $$</code></pre>
       <section id="projects" class="section project-grid">
         <div>
           <p class="section-kicker">Projects</p>
-          <h2>项目</h2>
+          <h2>Projects</h2>
         </div>
         <div class="project-list" id="project-list"></div>
       </section>
     </main>
 
     <footer id="contact" class="footer">
-      <p id="contact-line">把这里换成你的邮箱、GitHub、Google Scholar、ORCID 或个人简历 PDF。</p>
+      <p id="contact-line"></p>
     </footer>
 
     <script>
