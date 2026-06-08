@@ -1,10 +1,23 @@
 {
   "name": "Zihan Zhang (张子晗)",
   "title": "PhD Student, Fudan University",
+  "headline": "Notes on AI, drug design, and the mathematics behind useful systems.",
   "location": "China",
   "focus": ["AIDD", "LLMs", "GenAI"],
   "photo": "content/assets/profile.jpg",
   "bio": "我是张子晗，本科毕业于中国海洋大学数学与应用数学专业，目前就读于复旦大学电子信息专业。这个主页主要用于记录我的学习过程、研究笔记和技术写作。博士期间，我将关注 AI 药物设计等方向。",
+  "meta": {
+    "writingLabel": "Writing",
+    "writingValue": "Markdown + LaTeX",
+    "locationLabel": "Location"
+  },
+  "heroCode": "",
+  "sections": {
+    "researchTitle": "Research Direction",
+    "researchDescription": "My current interests are AI-driven drug design, large language models, and generative AI. I use this site mainly as a working notebook rather than a polished self-promotion page.",
+    "blogTitle": "Research Notes",
+    "projectsTitle": "Projects"
+  },
   "email": "zzh7488@stu.ouc.edu.cn",
   "links": [
     { "label": "GitHub", "url": "https://github.com/zzhhhh666" },

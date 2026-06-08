@@ -52,6 +52,9 @@ async function loadProfile() {
     document.querySelectorAll('[data-profile="title"]').forEach((node) => {
       node.textContent = profile.title || "";
     });
+    document.querySelectorAll('[data-profile="headline"]').forEach((node) => {
+      node.textContent = profile.headline || "";
+    });
     document.querySelectorAll('[data-profile="bio"]').forEach((node) => {
       node.textContent = profile.bio || "";
     });
@@ -60,6 +63,36 @@ async function loadProfile() {
     });
     document.querySelectorAll('[data-profile="location"]').forEach((node) => {
       node.textContent = profile.location || "";
+    });
+    document.querySelectorAll('[data-profile="metaWritingLabel"]').forEach((node) => {
+      node.textContent = profile.meta?.writingLabel || "Writing";
+    });
+    document.querySelectorAll('[data-profile="metaWritingValue"]').forEach((node) => {
+      node.textContent = profile.meta?.writingValue || "Markdown + LaTeX";
+    });
+    document.querySelectorAll('[data-profile="metaLocationLabel"]').forEach((node) => {
+      node.textContent = profile.meta?.locationLabel || "Location";
+    });
+    document.querySelectorAll('[data-profile="researchTitle"]').forEach((node) => {
+      node.textContent = profile.sections?.researchTitle || "Research";
+    });
+    document.querySelectorAll('[data-profile="researchDescription"]').forEach((node) => {
+      node.textContent = profile.sections?.researchDescription || "";
+    });
+    document.querySelectorAll('[data-profile="blogTitle"]').forEach((node) => {
+      node.textContent = profile.sections?.blogTitle || "Blog";
+    });
+    document.querySelectorAll('[data-profile="projectsTitle"]').forEach((node) => {
+      node.textContent = profile.sections?.projectsTitle || "Projects";
+    });
+    document.querySelectorAll("[data-profile-code]").forEach((node) => {
+      const code = profile.heroCode || "";
+      if (!code.trim()) {
+        node.style.display = "none";
+        return;
+      }
+      node.style.display = "";
+      node.querySelector("code").textContent = code;
     });
     document.querySelectorAll("[data-profile-photo]").forEach((node) => {
       if (!profile.photo) {

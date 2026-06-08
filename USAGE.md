@@ -1,34 +1,54 @@
-# 个人主页傻瓜版使用书
+# 个人主页使用书
 
-你的本地项目位置：
-
-```text
-C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs\personal-site
-```
-
-你的线上网站：
+线上网站：
 
 ```text
 https://zzhhhh666.github.io/
 ```
 
-你的 GitHub 仓库：
-
-```text
-https://github.com/zzhhhh666/zzhhhh666.github.io
-```
-
-## 1. 平时改网站，先打开哪个文件夹
-
-打开文件资源管理器，进入：
+本地项目文件夹：
 
 ```text
 C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs\personal-site
 ```
 
-推荐用 VS Code 打开这个文件夹。如果没有 VS Code，也可以用记事本改 `.json` 和 `.md` 文件。
+GitHub 仓库：
 
-## 2. 改个人信息
+```text
+https://github.com/zzhhhh666/zzhhhh666.github.io
+```
+
+## 1. 用什么软件改
+
+推荐用 VS Code 打开整个项目文件夹：
+
+```text
+C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs\personal-site
+```
+
+如果没有 VS Code，也可以用记事本改 `.json` 和 `.md` 文件。
+
+主要改这些位置：
+
+```text
+content\profile.json        主页文字、链接、标题、照片、右侧信息
+content\blog                博客文章
+content\papers.json         已发表论文 / 预印本 / 报告
+content\projects.json       项目
+styles.css                  页面样式
+```
+
+新手阶段尽量不要改：
+
+```text
+dist
+api
+.github
+server.js
+scripts
+```
+
+## 2. 改主页上的文字
 
 编辑：
 
@@ -36,94 +56,153 @@ C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs
 content\profile.json
 ```
 
-常改这些字段：
+常用字段如下：
 
 ```json
 {
-  "name": "你的名字",
-  "title": "Independent Researcher / Student",
+  "name": "Zihan Zhang (张子晗)",
+  "title": "PhD Student, Fudan University",
+  "headline": "主页最大标题",
   "location": "China",
-  "focus": ["AI", "Systems", "Theory"],
-  "bio": "这里写你的中文简介。",
-  "email": "your.email@example.com"
+  "focus": ["AIDD", "LLMs", "GenAI"],
+  "bio": "主页简介",
+  "email": "zzh7488@stu.ouc.edu.cn"
 }
 ```
 
-## 2.1 放个人照片
+对应关系：
 
-把你的个人照片复制到：
+- `name`: 左上角名字和网页标题。
+- `title`: 首页小标题。
+- `headline`: 首页最大的英文标题。
+- `bio`: 首页中文简介。
+- `focus`: 右侧 Focus 内容。
+- `location`: 右侧 Location 内容。
+- `email`: 页面底部联系方式。
+
+JSON 注意事项：
+
+- 必须用英文双引号 `"`。
+- 每一项之间用英文逗号 `,`。
+- 最后一项后面不要加逗号。
+
+## 3. 改右侧 Writing / Location / 代码块
+
+仍然编辑：
+
+```text
+content\profile.json
+```
+
+这一段控制右侧信息：
+
+```json
+"meta": {
+  "writingLabel": "Writing",
+  "writingValue": "Markdown + LaTeX",
+  "locationLabel": "Location"
+},
+"heroCode": ""
+```
+
+如果你想把 `Writing` 改成 `Notes`：
+
+```json
+"writingLabel": "Notes"
+```
+
+如果你想把 `Markdown + LaTeX` 改成 `Chinese Notes / Research Logs`：
+
+```json
+"writingValue": "Chinese Notes / Research Logs"
+```
+
+如果你觉得右侧 LaTeX 示例没有意义，保持：
+
+```json
+"heroCode": ""
+```
+
+它就不会显示。
+
+如果以后想显示一段代码，可以写成：
+
+```json
+"heroCode": "$$\\nE = mc^2\\n$$"
+```
+
+注意 JSON 里换行要写成 `\n`。
+
+## 4. 改 Live Blog 大标题
+
+编辑：
+
+```text
+content\profile.json
+```
+
+找到：
+
+```json
+"sections": {
+  "researchTitle": "Research Direction",
+  "researchDescription": "这里是研究方向说明",
+  "blogTitle": "Research Notes",
+  "projectsTitle": "Projects"
+}
+```
+
+如果你想把 `Markdown / LaTeX Blog` 改成中文，例如：
+
+```json
+"blogTitle": "学习笔记"
+```
+
+如果你想改研究区标题：
+
+```json
+"researchTitle": "Research Interests"
+```
+
+如果你想改项目区标题：
+
+```json
+"projectsTitle": "Selected Projects"
+```
+
+## 5. 放个人照片
+
+把你的照片复制到：
 
 ```text
 content\assets\profile.jpg
 ```
 
-推荐用正方形或接近正方形照片。如果你的照片是 `.png`，也可以放到：
+推荐照片：
+
+- 正方形或接近正方形。
+- 清晰头像或半身照。
+- 文件名就叫 `profile.jpg`。
+
+如果你的照片是 PNG，放到：
 
 ```text
 content\assets\profile.png
 ```
 
-然后把 `content\profile.json` 里的这一行改成：
+然后把 `content\profile.json` 里的：
 
 ```json
-"photo": "content/assets/profile.png",
+"photo": "content/assets/profile.jpg"
 ```
 
-改完后重新构建并发布：
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build-local.ps1
-git add .
-git commit -m "Update profile photo"
-git push
-```
-
-注意：
-
-- 英文双引号不能删。
-- 每一项之间要有英文逗号。
-- 最后一项后面不要多加逗号。
-
-## 3. 改项目列表
-
-编辑：
-
-```text
-content\projects.json
-```
-
-每个项目长这样：
+改成：
 
 ```json
-{
-  "index": "01",
-  "title": "项目名",
-  "description": "项目简介",
-  "url": "https://github.com/你的项目"
-}
+"photo": "content/assets/profile.png"
 ```
 
-## 4. 改论文 / 报告列表
-
-编辑：
-
-```text
-content\papers.json
-```
-
-每篇论文长这样：
-
-```json
-{
-  "title": "论文标题",
-  "venue": "Preprint",
-  "year": "2026",
-  "description": "一句话简介",
-  "url": "https://arxiv.org/abs/xxxx.xxxxx"
-}
-```
-
-## 5. 写博客
+## 6. 添加 / 更新博客
 
 博客文件夹：
 
@@ -131,23 +210,36 @@ content\papers.json
 content\blog
 ```
 
-新建一个 `.md` 文件，例如：
+新建一个 Markdown 文件，例如：
 
 ```text
-2026-06-08-my-first-real-note.md
+2026-06-08-aidd-note.md
 ```
 
-内容模板：
+文件名建议：
+
+```text
+日期-英文短标题.md
+```
+
+例如：
+
+```text
+2026-06-08-diffusion-model-reading.md
+2026-06-09-protein-design-note.md
+```
+
+博客模板：
 
 ```md
 ---
-title: 我的第一篇真实笔记
+title: 文章标题
 date: 2026-06-08
-tags: notes, latex, 中文
-summary: 这是一句显示在文章列表里的摘要。
+tags: AIDD, notes, 中文
+summary: 这是一句话摘要，会显示在文章列表里。
 ---
 
-# 我的第一篇真实笔记
+# 文章标题
 
 这里写正文。
 
@@ -166,19 +258,128 @@ $$
 draft: true
 ```
 
-例如：
+完整例子：
 
 ```md
 ---
 title: 还没写完的草稿
 date: 2026-06-08
+tags: draft
+summary: 暂时不发布。
 draft: true
 ---
+
+# 还没写完的草稿
 ```
 
-## 6. 本地预览
+删除博客：
 
-打开 PowerShell，进入项目文件夹：
+直接删除对应的 `.md` 文件，然后重新构建、提交、推送。
+
+## 7. 添加已发表论文
+
+编辑：
+
+```text
+content\papers.json
+```
+
+如果目前没有论文，内容可以是：
+
+```json
+[]
+```
+
+添加一篇论文：
+
+```json
+[
+  {
+    "title": "论文标题",
+    "venue": "Journal / Conference / Preprint",
+    "year": "2026",
+    "description": "一句话简介。",
+    "url": "https://论文链接"
+  }
+]
+```
+
+添加多篇论文：
+
+```json
+[
+  {
+    "title": "第一篇论文",
+    "venue": "Preprint",
+    "year": "2026",
+    "description": "第一篇简介。",
+    "url": "https://example.com/paper-1"
+  },
+  {
+    "title": "第二篇论文",
+    "venue": "Journal Name",
+    "year": "2027",
+    "description": "第二篇简介。",
+    "url": "https://example.com/paper-2"
+  }
+]
+```
+
+注意：
+
+- 每篇论文是一个 `{ ... }`。
+- 多篇论文之间用英文逗号分隔。
+- 最后一篇后面不要加逗号。
+
+## 8. 添加项目
+
+编辑：
+
+```text
+content\projects.json
+```
+
+如果目前没有公开项目，内容可以是：
+
+```json
+[]
+```
+
+添加一个项目：
+
+```json
+[
+  {
+    "index": "01",
+    "title": "项目名称",
+    "description": "项目简介。",
+    "url": "https://github.com/你的项目"
+  }
+]
+```
+
+添加多个项目：
+
+```json
+[
+  {
+    "index": "01",
+    "title": "AIDD Notes",
+    "description": "AI 药物设计相关笔记和阅读记录。",
+    "url": "https://github.com/zzhhhh666"
+  },
+  {
+    "index": "02",
+    "title": "LLM Experiments",
+    "description": "大语言模型实验记录。",
+    "url": "https://github.com/zzhhhh666"
+  }
+]
+```
+
+## 9. 本地预览
+
+打开 PowerShell，进入项目目录：
 
 ```powershell
 cd "C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs\personal-site"
@@ -190,45 +391,69 @@ cd "C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\out
 powershell -ExecutionPolicy Bypass -File .\scripts\start-local.ps1
 ```
 
-然后浏览器打开：
+浏览器打开：
 
 ```text
 http://localhost:4321/
 ```
 
-本地预览时，你改 `content` 里的 Markdown 或 JSON，网页会自动更新。
+本地预览时，改 `content` 里的文件后页面会自动更新。
 
-## 7. 发布到 GitHub
+## 10. 上传更新网站
 
-每次改完内容，发布前先构建：
+每次改完内容后，在 PowerShell 里进入项目目录：
+
+```powershell
+cd "C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs\personal-site"
+```
+
+第一步，重新构建：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\build-local.ps1
 ```
 
-然后提交：
+第二步，查看改了什么：
+
+```powershell
+git status
+```
+
+第三步，提交：
 
 ```powershell
 git add .
 git commit -m "Update site"
-git push
 ```
 
-如果 `git push` 连不上 GitHub，先在同一个 PowerShell 里运行：
+第四步，上传：
 
 ```powershell
-$env:HTTPS_PROXY="http://127.0.0.1:7890"
-$env:HTTP_PROXY="http://127.0.0.1:7890"
 git push
 ```
 
-发布后等 30 秒到 2 分钟，再打开：
+上传后等 30 秒到 2 分钟，打开：
 
 ```text
 https://zzhhhh666.github.io/
 ```
 
-## 8. 在 GitHub 网站上看发布状态
+## 11. 如果 git push 连不上
+
+你的电脑通常需要代理。先在同一个 PowerShell 里运行：
+
+```powershell
+$env:HTTPS_PROXY="http://127.0.0.1:7890"
+$env:HTTP_PROXY="http://127.0.0.1:7890"
+```
+
+然后再运行：
+
+```powershell
+git push
+```
+
+## 12. 查看 GitHub 发布状态
 
 打开：
 
@@ -236,56 +461,55 @@ https://zzhhhh666.github.io/
 https://github.com/zzhhhh666/zzhhhh666.github.io/actions
 ```
 
-看最新的 `Deploy to GitHub Pages` 是否是绿色对勾。
+看最新一条是否是绿色对勾。
 
-如果是绿色对勾，说明发布成功。
+绿色对勾：发布成功。
 
-## 9. 不要随便改这些
+黄色圆点：正在发布，等一会儿。
 
-新手阶段尽量不要直接改：
+红色叉：发布失败，可以把截图或报错发给 Codex。
 
-```text
-dist
-api
-.github
-server.js
-scripts
-```
+## 13. 常见问题
 
-你主要改：
+### Live Blog 不显示
+
+先确认：
 
 ```text
-content\profile.json
-content\projects.json
-content\papers.json
-content\blog
+api\posts
+content\blog\你的文章.md
+.nojekyll
 ```
 
-想改页面样式时再改：
+都存在。
 
-```text
-styles.css
-```
-
-想改页面结构时再改：
-
-```text
-index.html
-```
-
-## 10. 最常见问题
-
-### 本地网页没更新
-
-刷新浏览器，或重新运行：
+然后重新构建和上传：
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\start-local.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\build-local.ps1
+git add .
+git commit -m "Fix blog"
+git push
 ```
 
-### 线上网页没更新
+### 中文乱码
 
-确认你做过：
+用 VS Code 打开文件，右下角编码选择 `UTF-8`。
+
+不要用会自动转编码的老旧编辑器。
+
+### JSON 报错
+
+通常是：
+
+- 少了英文逗号。
+- 用了中文引号。
+- 最后一项多了逗号。
+- 数组 `[` `]` 或对象 `{` `}` 没配对。
+
+### 线上没变化
+
+确认你做了：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\build-local.ps1
@@ -294,27 +518,4 @@ git commit -m "Update site"
 git push
 ```
 
-然后去 Actions 页面看是否成功。
-
-### JSON 改坏了
-
-通常是少了英文逗号、用了中文引号、最后一项多了逗号。
-
-### Git 提示 nothing to commit
-
-说明没有新改动，或者你改的不是这个项目文件夹。
-
-### GitHub 打不开或 push 失败
-
-在 PowerShell 里先设置代理：
-
-```powershell
-$env:HTTPS_PROXY="http://127.0.0.1:7890"
-$env:HTTP_PROXY="http://127.0.0.1:7890"
-```
-
-再运行：
-
-```powershell
-git push
-```
+再去 Actions 页面看是否成功。

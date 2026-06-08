@@ -30,7 +30,7 @@
             <img data-profile-photo alt="Zihan Zhang profile photo" />
           </figure>
           <p class="eyebrow" data-profile="title">PhD in Fudan University</p>
-          <h1>Notes on AI, drug design, and the mathematics behind useful systems.</h1>
+          <h1 data-profile="headline">Notes on AI, drug design, and the mathematics behind useful systems.</h1>
           <p class="hero-text" data-profile="bio">
             This site collects my research notes, learning process, and long-form technical writing.
           </p>
@@ -45,14 +45,14 @@
             <strong data-profile="focus">AIDD · LLMs · GenAI</strong>
           </div>
           <div class="paper-line">
-            <span>Writing</span>
-            <strong>Markdown + LaTeX</strong>
+            <span data-profile="metaWritingLabel">Writing</span>
+            <strong data-profile="metaWritingValue">Markdown + LaTeX</strong>
           </div>
           <div class="paper-line">
-            <span>Location</span>
+            <span data-profile="metaLocationLabel">Location</span>
             <strong data-profile="location">China</strong>
           </div>
-          <pre><code>$$
+          <pre data-profile-code><code>$$
 \nabla_\theta J(\theta)
 = \mathbb{E}[\nabla_\theta \log \pi_\theta(a|s)R]
 $$</code></pre>
@@ -61,13 +61,12 @@ $$</code></pre>
 
       <section id="research" class="section two-column">
         <div>
-          <p class="section-kicker">Research</p>
-          <h2>Research Direction</h2>
+            <p class="section-kicker">Research</p>
+          <h2 data-profile="researchTitle">Research Direction</h2>
         </div>
         <div class="prose">
-          <p>
+          <p data-profile="researchDescription">
             My current interests are AI-driven drug design, large language models, and generative AI.
-            I use this site mainly as a working notebook rather than a polished self-promotion page.
           </p>
           <div class="paper-list" id="paper-list"></div>
         </div>
@@ -77,7 +76,7 @@ $$</code></pre>
         <div class="blog-header">
           <div>
             <p class="section-kicker">Live Blog</p>
-            <h2>Markdown / LaTeX Blog</h2>
+            <h2 data-profile="blogTitle">Markdown / LaTeX Blog</h2>
           </div>
           <div class="status" id="live-status">Loading</div>
         </div>
@@ -90,7 +89,7 @@ $$</code></pre>
       <section id="projects" class="section project-grid">
         <div>
           <p class="section-kicker">Projects</p>
-          <h2>Projects</h2>
+          <h2 data-profile="projectsTitle">Projects</h2>
         </div>
         <div class="project-list" id="project-list"></div>
       </section>
