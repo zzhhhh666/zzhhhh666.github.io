@@ -60,6 +60,7 @@ await Promise.all([
   copyFile(path.join(root, "app.js"), path.join(outDir, "app.js")),
   copyTree(path.join(root, "content"), path.join(outDir, "content"))
 ]);
+await writeFile(path.join(outDir, ".nojekyll"), "", "utf8");
 await mkdir(path.join(outDir, "api"), { recursive: true });
 const postsJson = JSON.stringify(await getPosts());
 await writeFile(path.join(outDir, "api", "posts"), postsJson, "utf8");
