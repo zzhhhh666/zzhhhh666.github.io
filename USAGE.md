@@ -33,6 +33,8 @@ C:\Users\zzh666\Documents\Codex\2026-06-07\latex-markdown-latex-markdown\outputs
 ```text
 content\profile.json        主页文字、链接、标题、照片、右侧信息
 content\blog                博客文章
+content\pdfs                PDF 文件
+content\pdfs.json           PDF 展示列表
 content\papers.json         已发表论文 / 预印本 / 报告
 content\projects.json       项目
 styles.css                  页面样式
@@ -252,6 +254,20 @@ $$
 $$
 ```
 
+`tags` 是必须写的。可以用英文逗号或中文逗号分隔：
+
+```md
+tags: GPCR, SBDD, 论文阅读, Diary Style
+```
+
+或者：
+
+```md
+tags: GPCR，SBDD，论文阅读，Diary Style
+```
+
+网站会把它们拆成独立 tag 并显示在文章列表和正文顶部。
+
 如果文章没写完，不想发布，加：
 
 ```md
@@ -275,6 +291,85 @@ draft: true
 删除博客：
 
 直接删除对应的 `.md` 文件，然后重新构建、提交、推送。
+
+### 6.1 写脚注 / 引用说明
+
+文章里可以这样写脚注：
+
+```md
+这里是一句需要补充说明的话。[^note-1]
+
+[^note-1]: 这里是脚注内容，会自动显示在文章底部。
+```
+
+网页会把 `[^note-1]` 渲染成可点击的脚注编号，不会再显示原始编码。
+
+### 6.2 Frontmatter 不会显示在正文里
+
+文章开头的这部分：
+
+```md
+---
+title: 文章标题
+date: 2026-06-08
+tags: AIDD, notes
+summary: 摘要
+---
+```
+
+叫 frontmatter，只用于生成标题、日期、tag 和摘要，不会作为正文显示。
+
+## 6.3 添加 PDF 展示
+
+PDF 文件夹：
+
+```text
+content\pdfs
+```
+
+第一步：把 PDF 放进去，例如：
+
+```text
+content\pdfs\dynamic-glep-note.pdf
+```
+
+第二步：编辑：
+
+```text
+content\pdfs.json
+```
+
+如果没有 PDF，内容保持：
+
+```json
+[]
+```
+
+如果添加一个 PDF，写成：
+
+```json
+[
+  {
+    "slug": "dynamic-glep-pdf",
+    "title": "Dynamic-GLEP PDF Notes",
+    "date": "2026-06-25",
+    "tags": ["GPCR", "SBDD", "PDF"],
+    "summary": "这是一份 PDF 展示材料。",
+    "file": "content/pdfs/dynamic-glep-note.pdf"
+  }
+]
+```
+
+说明：
+
+- `slug`: 唯一英文 ID，不要有空格。
+- `title`: PDF 标题。
+- `date`: 日期。
+- `tags`: 必须写，数组格式。
+- `summary`: 摘要。
+- `file`: PDF 文件路径。
+
+PDF 会和 Markdown 文章出现在同一个文档列表中，并带有 `PDF` 类型标记和 tag。点击后页面会内嵌展示 PDF，并提供打开 PDF 的按钮。
 
 ## 7. 添加已发表论文
 

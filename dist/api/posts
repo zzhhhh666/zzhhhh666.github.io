@@ -1,1 +1,1 @@
-[{"slug":"2026-06-08-about-this-blog_edited","file":"2026-06-08-about-this-blog_edited.md","title":"Warmup-01","date":"2026-06-11","tags":["GPCR","SBDD","论文阅读，Diary Style"],"summary":"Dynamic-GLEP：一种基于动力学信息的深度学习框架，用于代表性 A 类 GPCR 的配体效能预测。","draft":false}]
+[{"type":"markdown","slug":"2026-06-08-about-this-blog_edited","file":"2026-06-08-about-this-blog_edited.md","title":"Warmup-01","date":"2026-06-11","tags":["GPCR","SBDD","AIDD","论文阅读","Diary Style","Dynamic-GLEP"],"summary":"Dynamic-GLEP 论文阅读札记：从 GPCR ligand efficacy、动态构象、ensemble docking 到 EquiScore 迁移学习。","draft":false}]

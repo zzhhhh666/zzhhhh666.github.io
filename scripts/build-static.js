@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const outDir = path.join(root, "dist");
 const blogDir = path.join(root, "content", "blog");
+const pdfManifestPath = path.join(root, "content", "pdfs.json");
 
 function parseFrontmatter(source) {
   if (!source.startsWith("---")) return {};
@@ -21,6 +22,13 @@ function parseFrontmatter(source) {
   );
 }
 
+function parseTags(value = "") {
+  return String(value)
+    .split(/[,，;；]/)
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
 async function copyTree(from, to) {
   await mkdir(to, { recursive: true });
   for (const entry of await readdir(from, { withFileTypes: true })) {
@@ -33,23 +41,44 @@ async function copyTree(from, to) {
 
 async function getPosts() {
   const files = (await readdir(blogDir)).filter((file) => file.endsWith(".md"));
-  const posts = await Promise.all(
+  const markdownPosts = await Promise.all(
     files.map(async (file) => {
       const fullPath = path.join(blogDir, file);
       const [source, info] = await Promise.all([readFile(fullPath, "utf8"), stat(fullPath)]);
       const meta = parseFrontmatter(source);
       return {
+        type: "markdown",
         slug: file.replace(/\.md$/, ""),
         file,
         title: meta.title || file.replace(/\.md$/, ""),
         date: meta.date || info.mtime.toISOString().slice(0, 10),
-        tags: (meta.tags || "").split(",").map((tag) => tag.trim()).filter(Boolean),
+        tags: parseTags(meta.tags),
         summary: meta.summary || "",
         draft: meta.draft === "true"
       };
     })
   );
-  return posts.filter((post) => !post.draft).sort((a, b) => b.date.localeCompare(a.date));
+
+  let pdfPosts = [];
+  try {
+    pdfPosts = JSON.parse(await readFile(pdfManifestPath, "utf8")).map((item) => ({
+      type: "pdf",
+      slug: item.slug || path.basename(item.file || "", path.extname(item.file || "")),
+      file: item.file,
+      title: item.title,
+      date: item.date || "",
+      tags: Array.isArray(item.tags) ? item.tags : parseTags(item.tags),
+      summary: item.summary || "",
+      draft: item.draft === true
+    }));
+  } catch {
+    pdfPosts = [];
+  }
+
+  return [...markdownPosts, ...pdfPosts]
+    .filter((post) => !post.draft)
+    .filter((post) => post.title && post.slug && post.tags?.length)
+    .sort((a, b) => `${b.date}-${b.slug}`.localeCompare(`${a.date}-${a.slug}`));
 }
 
 await rm(outDir, { recursive: true, force: true });

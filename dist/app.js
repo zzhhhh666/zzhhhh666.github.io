@@ -5,6 +5,7 @@ const projectList = document.querySelector("#project-list");
 const paperList = document.querySelector("#paper-list");
 const contactLine = document.querySelector("#contact-line");
 let currentSlug = "";
+let currentType = "";
 
 if (window.marked) {
   marked.setOptions({
@@ -15,6 +16,21 @@ if (window.marked) {
 
 function stripFrontmatter(source) {
   return source.replace(/^---[\s\S]*?\n---\s*/, "");
+}
+
+function parseFrontmatter(source) {
+  if (!source.startsWith("---")) return {};
+  const end = source.indexOf("\n---", 3);
+  if (end === -1) return {};
+  return Object.fromEntries(
+    source
+      .slice(3, end)
+      .trim()
+      .split(/\r?\n/)
+      .map((line) => line.match(/^([^:]+):\s*(.*)$/))
+      .filter(Boolean)
+      .map((match) => [match[1].trim(), match[2].trim().replace(/^["']|["']$/g, "")])
+  );
 }
 
 function escapeHtml(value) {
@@ -29,6 +45,53 @@ function escapeHtml(value) {
 function renderMarkdown(source) {
   if (window.marked) return marked.parse(source);
   return `<pre>${escapeHtml(source)}</pre>`;
+}
+
+function renderTags(tags = []) {
+  if (!tags.length) return "";
+  return `<div class="tag-row">${tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>`;
+}
+
+function prepareFootnotes(markdown) {
+  const lines = markdown.split(/\r?\n/);
+  const notes = [];
+  const bodyLines = [];
+  let activeNote = null;
+
+  for (const line of lines) {
+    const definition = line.match(/^\[\^([^\]]+)\]:\s*(.*)$/);
+    if (definition) {
+      activeNote = { id: definition[1], body: [definition[2]] };
+      notes.push(activeNote);
+      continue;
+    }
+
+    if (activeNote && /^( {2,}|\t)/.test(line)) {
+      activeNote.body.push(line.trim());
+      continue;
+    }
+
+    activeNote = null;
+    bodyLines.push(line);
+  }
+
+  const noteNumbers = new Map(notes.map((note, index) => [note.id, index + 1]));
+  const withRefs = bodyLines.join("\n").replace(/\[\^([^\]]+)\]/g, (match, id) => {
+    const number = noteNumbers.get(id);
+    if (!number) return match;
+    return `<sup class="footnote-ref" id="fnref-${escapeHtml(id)}"><a href="#fn-${escapeHtml(id)}">${number}</a></sup>`;
+  });
+
+  if (!notes.length) return withRefs;
+
+  const renderedNotes = notes
+    .map((note, index) => {
+      const html = renderMarkdown(note.body.join("\n")).trim();
+      return `<li id="fn-${escapeHtml(note.id)}">${html}<a class="footnote-backref" href="#fnref-${escapeHtml(note.id)}">↩</a></li>`;
+    })
+    .join("");
+
+  return `${withRefs}\n\n<section class="footnotes"><h2>Notes</h2><ol>${renderedNotes}</ol></section>`;
 }
 
 function renderMath() {
@@ -168,7 +231,7 @@ async function loadPapers() {
   }
 }
 
-async function loadPosts(selectSlug = currentSlug) {
+async function loadPosts(selectSlug = currentSlug, selectType = currentType) {
   try {
     const posts = await fetch(`/api/posts?ts=${Date.now()}`).then((response) => {
       if (!response.ok) throw new Error("Cannot load post manifest");
@@ -184,23 +247,27 @@ async function loadPosts(selectSlug = currentSlug) {
       return;
     }
 
-    const selected = posts.find((post) => post.slug === selectSlug) || posts[0];
+    const selected = posts.find((post) => post.slug === selectSlug && (!selectType || post.type === selectType)) || posts[0];
     currentSlug = selected.slug;
+    currentType = selected.type;
 
     for (const post of posts) {
       const button = document.createElement("button");
-      button.className = `post-button${post.slug === currentSlug ? " active" : ""}`;
+      button.className = `post-button${post.slug === currentSlug && post.type === currentType ? " active" : ""}`;
       button.type = "button";
       button.dataset.slug = post.slug;
+      button.dataset.type = post.type;
       button.innerHTML = `
         <strong>${escapeHtml(post.title)}</strong>
-        <span>${escapeHtml(post.date)}${post.summary ? ` · ${escapeHtml(post.summary)}` : ""}</span>
+        <span>${escapeHtml(post.date)} · ${post.type === "pdf" ? "PDF" : "Markdown"}</span>
+        ${renderTags(post.tags)}
+        ${post.summary ? `<em>${escapeHtml(post.summary)}</em>` : ""}
       `;
-      button.addEventListener("click", () => loadPost(post.slug));
+      button.addEventListener("click", () => loadPost(post));
       postList.append(button);
     }
 
-    await loadPost(currentSlug, false);
+    await loadPost(selected, false);
     liveStatus.textContent = ["localhost", "127.0.0.1"].includes(window.location.hostname)
       ? "Watching"
       : "Published";
@@ -211,18 +278,47 @@ async function loadPosts(selectSlug = currentSlug) {
   }
 }
 
-async function loadPost(slug, refreshList = true) {
-  currentSlug = slug;
+async function loadPost(post, refreshList = true) {
+  currentSlug = post.slug;
+  currentType = post.type;
   if (refreshList) {
     for (const button of postList.querySelectorAll(".post-button")) {
-      button.classList.toggle("active", button.dataset.slug === slug);
+      button.classList.toggle("active", button.dataset.slug === post.slug && button.dataset.type === post.type);
     }
   }
 
-  const response = await fetch(`/content/blog/${slug}.md?ts=${Date.now()}`);
-  if (!response.ok) throw new Error(`Cannot load post: ${slug}`);
+  if (post.type === "pdf") {
+    postView.innerHTML = `
+      <header class="document-header">
+        <p class="document-type">PDF</p>
+        <h1>${escapeHtml(post.title)}</h1>
+        <p class="document-date">${escapeHtml(post.date || "")}</p>
+        ${renderTags(post.tags)}
+        ${post.summary ? `<p>${escapeHtml(post.summary)}</p>` : ""}
+        <a class="button ghost" href="${escapeHtml(post.file)}" target="_blank" rel="noreferrer">Open PDF</a>
+      </header>
+      <iframe class="pdf-frame" src="${escapeHtml(post.file)}" title="${escapeHtml(post.title)}"></iframe>
+    `;
+    return;
+  }
+
+  const response = await fetch(`/content/blog/${post.slug}.md?ts=${Date.now()}`);
+  if (!response.ok) throw new Error(`Cannot load post: ${post.slug}`);
   const source = await response.text();
-  postView.innerHTML = renderMarkdown(stripFrontmatter(source));
+  const meta = parseFrontmatter(source);
+  const title = meta.title || post.title;
+  const bodyWithoutRepeatedTitle = stripFrontmatter(source).replace(new RegExp(`^#\\s+${title.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*\\n+`), "");
+  const body = prepareFootnotes(bodyWithoutRepeatedTitle);
+  postView.innerHTML = `
+    <header class="document-header">
+      <p class="document-type">Markdown</p>
+      <h1>${escapeHtml(title)}</h1>
+      <p class="document-date">${escapeHtml(meta.date || post.date || "")}</p>
+      ${renderTags(post.tags)}
+      ${meta.summary ? `<p>${escapeHtml(meta.summary)}</p>` : ""}
+    </header>
+    ${renderMarkdown(body)}
+  `;
   renderMath();
 }
 
@@ -232,7 +328,7 @@ if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
     await loadProfile();
     await loadProjects();
     await loadPapers();
-    await loadPosts(currentSlug);
+    await loadPosts(currentSlug, currentType);
   });
 }
 

@@ -1,11 +1,30 @@
 ---
 title: Warmup-01
 date: 2026-06-11
-tags: GPCR, SBDD, 论文阅读，Diary Style
-summary: Dynamic-GLEP：一种基于动力学信息的深度学习框架，用于代表性 A 类 GPCR 的配体效能预测。
+tags: GPCR, SBDD, AIDD, 论文阅读, Diary Style, Dynamic-GLEP
+summary: Dynamic-GLEP 论文阅读札记：从 GPCR ligand efficacy、动态构象、ensemble docking 到 EquiScore 迁移学习。
 ---
 
 # Dynamic-GLEP
+
+> 这是一篇 diary style 的论文阅读笔记，不是正式综述。文中有些判断来自我当前阶段的理解，也保留了一些尚未解决的问题。为了方便以后回看，我把“背景学习”“文章方法”“我的质疑”和“ChatGPT 修正注”分开处理。
+
+## 阅读定位
+
+这篇笔记关注的是 Dynamic-GLEP 如何把 GPCR 的动态构象信息引入 ligand efficacy prediction。对我来说，它真正有意思的地方不是单纯换了一个分类模型，而是把静态 receptor-ligand complex 的视角往 dynamic ensemble 推了一步。
+
+我阅读时主要追问四个问题：
+
+1. GPCR ligand efficacy 和 binding affinity 到底有什么区别？
+2. Holo / Apo 与 active / inactive 是否被文章讲清楚了？
+3. MD、PCA、RRCS、ensemble docking 之间的流程是否足够透明？
+4. EquiScore TL 的性能提升，究竟来自动态构象、迁移学习，还是两者混合后的工程收益？
+
+## 结论先行
+
+我的初步判断是：Dynamic-GLEP 的方向是有意义的，因为 GPCR 这类体系确实不适合只看单一静态构象。但文章里有几个地方仍然不够透明，尤其是 Holo / Apo workflow 的结构来源、grid 定义、口袋稳定性判断，以及 RRCS 如何具体筛选 selected conformations。
+
+因此，我更愿意把这篇文章理解成一个结构先验驱动的 dynamic ensemble pipeline，而不是一个已经完全解决 GPCR efficacy prediction 的端到端模型。
 
 ## 0. 生物背景学习：GPCR、ligand、receptor
 
